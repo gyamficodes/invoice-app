@@ -26,7 +26,6 @@ header{
     .branding{
         border-radius: 0 20px 20px 0;
         background-color: #7c5dfa;
-        // height: 70px;
         padding: 30px;
         display: flex;
         align-items: center;

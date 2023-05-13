@@ -1,10 +1,14 @@
 <template>
   <div>
-    <div class="app flex flex-column">
-    <NavigationPage />
+    <div v-if="!mobile " class="app flex flex-column">
+      <NavigationPage />
       <div class="app-content flex flex-column">
         <router-view />
       </div>
+    </div>
+    <div v-else class="mobile-message flex flex-column">
+    <h2>Sorry, this app is not supported on mobile devices</h2>
+    <p> To use this app, please use computer or tablet</p>
     </div>
   </div>
 
@@ -12,7 +16,6 @@
     <router-link to="/"></router-link>
     <router-link to="/about"></router-link>
   </nav>
-
 </template>
 <script>
 import NavigationPage from './components/NavigationPage.vue';
@@ -22,9 +25,23 @@ export default {
     NavigationPage,
   },
   data() {
-    return {};
+    return {
+      mobile: null,
+    };
   },
-  methods: {},
+  created() {
+    this.checkScreen();
+    window.addEventListener('resize', this.checkScreen);
+  },
+  methods: {
+    checkScreen() {
+      const windowWidth = window.innerWidth;
+      if (windowWidth <= 660) {
+        this.mobile = true;
+      }
+      this.mobile = false;
+    },
+  },
   computed: {},
   watch: {},
   mounted() {},
