@@ -1,14 +1,27 @@
 <template>
   <header class="flex">
     <div class="branding flex">
-    <img src="@/assets/file-invoice-dollar-solid.png" alt="">
+    <img :src="image2" alt="">
     </div>
   </header>
 </template>
 
 <script>
+import pic from '@/assets/file-invoice-dollar-solid.png';
+
 export default {
   name: 'NavigationPage',
+  components: {},
+  data() {
+    return {
+      image2: pic,
+    };
+  },
+  computed: {},
+  methods: {},
+  watch: {},
+  mounted() {},
+
 };
 </script>
 
