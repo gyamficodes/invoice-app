@@ -18,7 +18,7 @@
             <li>Clear Filter</li>
           </ul>
         </div>
-        <div @click="newInvoice" @keypress="mouse" class="button flex">
+        <div @click="newInvoice" @keypress="Mouse" class="button flex">
           <div class="inner-button flex">
             <img :src="image2" alt="" />
           </div>
