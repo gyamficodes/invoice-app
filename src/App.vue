@@ -36,7 +36,7 @@ export default {
   methods: {
     checkScreen() {
       const windowWidth = window.innerWidth;
-      if (windowWidth <= 660) {
+      if (windowWidth <= 750) {
         this.mobile = true;
       }
       this.mobile = false;
