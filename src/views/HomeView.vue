@@ -18,7 +18,7 @@
             <li>Clear Filter</li>
           </ul>
         </div>
-        <div @click="newInvoice" @keypress="Mouse" class="button flex">
+        <div @click="newInvoice"  class="button flex">
           <div class="inner-button flex">
             <img :src="image2" alt="" />
           </div>
@@ -34,6 +34,7 @@
 
 <script>
 // @ is an alias to /src
+// import { mapMutations } from 'vuex';
 import pic from '@/assets/icon-arrow-down.svg';
 import pic2 from '@/assets/icon-plus.svg';
 
@@ -47,11 +48,21 @@ export default {
       FilterMenu: false,
     };
   },
-  computed: {},
+  computed: {
+    invoModal() {
+      return this.$store.state.invoiceModal;
+    },
+  },
   methods: {
-    newInvoice() {},
+    // ...mapMutations([' TOGGLE_INVOICE']),
+    newInvoice() {
+      this.$store.commit('TOGGLE_INVOICE');
+    },
     toggleFilterMenu() {
       this.FilterMenu = !this.FilterMenu;
+    },
+    toggleModal() {
+      return this.$store.commit('TOGGLE_INVOICE');
     },
   },
   watch: {},
