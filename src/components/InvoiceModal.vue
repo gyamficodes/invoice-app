@@ -92,18 +92,18 @@
           <table class="item-lists">
             <tr class="table-heading flex">
               <th class="item-name">Item Name</th>
-              <th class="qty" style="margin-left: 180px margin-" >Qty</th>
-              <th class="price" style="margin-left: 60px">Price</th>
-              <th class="total" style="margin-left: 90px">Total</th>
+              <th class="qty" style="margin-left: 160px " >Qty</th>
+              <th class="price" style="margin-left: 80px">Price</th>
+              <th class="total" style="margin-left: 170px">Total</th>
             </tr>
             <tr class="table-items flex" style="margin-bottom: 10px;" v-for="(item, index) in invoiceItemList" :key="index">
               <td class="item-name">
                 <label></label> <input type="text" v-model="item.itemName" />
               </td>
-              <td class="qty"><label></label> <input type="text" v-model="item.qty" /></td>
-              <td class="price"><label></label> <input type="text" v-model="item.price" /></td>
-              <td class="total flex">${{ (item.total = item.qty * item.price) }}</td>
-              <img @click="deleteInvoiceItem(item.id)" :src="pic" alt="" />
+              <td class="qty" style="margin-left: 9px;"><label></label> <input type="text" v-model="item.qty" /></td>
+              <td class="price" style="margin-left: 10px;"><label></label> <input type="text" v-model="item.price" /></td>
+              <td style="margin-left: 15px;" class="total flex" >${{ (item.total = item.qty * item.price) }}</td>
+              <img style="margin-left: 15px;" @click="deleteInvoiceItem(item.id)" :src="pic" alt="" />
             </tr>
           </table>
           <div @click="addNewInvoiceItem" class="flex button">
@@ -130,7 +130,6 @@
     </form>
   </div>
 </template>
-
 <script>
 import image from '@/assets/icon-delete.svg';
 import Image from '@/assets/icon-plus.svg';
@@ -190,6 +189,20 @@ export default {
     deleteInvoiceItem(id) {
       this.invoiceItemList = this.invoiceItemList.filter((item) => item.id !== id);
     },
+    publishInvoice() {
+      this.invoicePending = true;
+    },
+    saveDraft() {
+      this.invoiceDraft = true;
+    },
+    async uploadInvoice() {
+      if (this.invoiceItemList.length <= 0) {
+        alert('Please ensure you fill work items');
+      }
+    },
+    submitForm() {
+      this.uploadInvoice();
+    },
   },
   computed: {
     invoModal() {
@@ -239,6 +252,7 @@ export default {
   overflow: auto;
   overflow-x: hidden;
   color: #fff;
+  background: #141625;
   padding: 50px;
   // &::-webkit-scrollbar {
   //   display: none;
