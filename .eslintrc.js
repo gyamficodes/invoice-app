@@ -40,7 +40,6 @@ module.exports = {
     "vuejs-accessibility/valid-aria-props": "off",
     "vuejs-accessibility/valid-tabindex": "off",
     "vuejs-accessibility/no-static-element-interactions": "off",
-
   },
   overrides: [
     {

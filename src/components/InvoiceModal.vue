@@ -195,10 +195,17 @@ export default {
     saveDraft() {
       this.invoiceDraft = true;
     },
+    calInvoiceTotal() {
+      this.invoiceTotal = 0;
+      this.invoiceItemList.forEach(((item) => {
+        this.invoiceTotal += item.total;
+      }));
+    },
     async uploadInvoice() {
       if (this.invoiceItemList.length <= 0) {
         alert('Please ensure you fill work items');
       }
+      this.calInvoiceTotal();
     },
     submitForm() {
       this.uploadInvoice();
