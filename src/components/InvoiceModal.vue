@@ -102,7 +102,7 @@
               <td class="qty" style="margin-left: 9px;"><label></label> <input type="text" v-model="item.qty" /></td>
               <td class="price" style="margin-left: 10px;"><label></label> <input type="text" v-model="item.price" /></td>
               <td style="margin-left: 15px;" class="total flex" >${{ (item.total = item.qty * item.price) }}</td>
-              <img style="margin-left: 15px;" @click="deleteInvoiceItem(item.id)" :src="pic" alt="" />
+              <img style="margin-left: 15px; width: 20px; height:20px; cursor:pointer" @click="deleteInvoiceItem(item.id)" :src="pic" alt="" />
             </tr>
           </table>
           <div @click="addNewInvoiceItem" class="flex button">
@@ -130,10 +130,12 @@
   </div>
 </template>
 <script>
+// eslint-disable-next-line no-unused-vars
 import image from '@/assets/icon-delete.svg';
 import Image from '@/assets/icon-plus.svg';
+import { v4 as uuidv4 } from 'uuid';
+
 import db from '../Firebase/firebaseInit';
-// import { uid } from 'uid';
 
 export default {
   name: 'InvoiceModal',
@@ -177,9 +179,9 @@ export default {
     closeInvoice() {
       return this.$store.commit('TOGGLE_INVOICE');
     },
-    addNewInvoiceItem(id) {
+    addNewInvoiceItem() {
       this.invoiceItemList.push({
-        id,
+        id: uuidv4(),
         itemName: '',
         qty: '',
         price: 0,
@@ -209,6 +211,7 @@ export default {
       const dataBase = db.collection('invoices').doc();
 
       await dataBase.update({
+        invoiceId: uuidv4(),
         billerStreetAddress: this.billerStreetAddress,
         billerCity: this.billerCity,
         billerZipCode: this.billerZipCode,
@@ -219,12 +222,17 @@ export default {
         clientCity: this.clientCity,
         clientZipCode: this.clientZipCode,
         clientCountry: this.clientCountry,
+        invoiceDateUnix: this.invoiceDateUnix,
+        invoiceDate: this.invoiceDate,
         paymentTerms: this.paymentTerms,
-        paymentDueDate: this.paymentDueDate,
         paymentDueDateUnix: this.paymentDueDateUnix,
+        paymentDueDate: this.paymentDueDate,
         productDescription: this.productDescription,
+        invoicePending: this.invoicePending,
+        invoiceDraft: this.invoiceDraft,
         invoiceItemList: this.invoiceItemList,
         invoiceTotal: this.invoiceTotal,
+
       });
 
       this.TOGGLE_INVOICE();
