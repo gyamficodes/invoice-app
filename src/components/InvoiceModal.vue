@@ -31,7 +31,6 @@
           </div>
         </div>
       </div>
-
       <!-- Bill To -->
       <div class="bill-to flex flex-column">
         <h4>Bill To</h4>
@@ -133,6 +132,7 @@
 <script>
 import image from '@/assets/icon-delete.svg';
 import Image from '@/assets/icon-plus.svg';
+import db from '../Firebase/firebaseInit';
 // import { uid } from 'uid';
 
 export default {
@@ -206,6 +206,28 @@ export default {
         alert('Please ensure you fill work items');
       }
       this.calInvoiceTotal();
+      const dataBase = db.collection('invoices').doc();
+
+      await dataBase.update({
+        billerStreetAddress: this.billerStreetAddress,
+        billerCity: this.billerCity,
+        billerZipCode: this.billerZipCode,
+        billerCountry: this.billerCountry,
+        clientName: this.clientName,
+        clientEmail: this.clientEmail,
+        clientStreetAddress: this.clientStreetAddress,
+        clientCity: this.clientCity,
+        clientZipCode: this.clientZipCode,
+        clientCountry: this.clientCountry,
+        paymentTerms: this.paymentTerms,
+        paymentDueDate: this.paymentDueDate,
+        paymentDueDateUnix: this.paymentDueDateUnix,
+        productDescription: this.productDescription,
+        invoiceItemList: this.invoiceItemList,
+        invoiceTotal: this.invoiceTotal,
+      });
+
+      this.TOGGLE_INVOICE();
     },
     submitForm() {
       this.uploadInvoice();
