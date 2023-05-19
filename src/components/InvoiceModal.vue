@@ -6,6 +6,7 @@
     class="invoice-wrap flex flex-column"
   >
     <form>
+  <AnimationPageVue/>
       <h1 style="margin-bottom: 40px" v-if="!editInvoice">New Invoice</h1>
       <h1 v-else>Edit Invoice</h1>
 
@@ -134,12 +135,14 @@
 import image from '@/assets/icon-delete.svg';
 import Image from '@/assets/icon-plus.svg';
 import { v4 as uuidv4 } from 'uuid';
-
 import db from '../Firebase/firebaseInit';
+import AnimationPageVue from './AnimationPage.vue';
 
 export default {
   name: 'InvoiceModal',
-  components: {},
+  components: {
+    AnimationPageVue,
+  },
   props: [],
   data() {
     return {
@@ -208,10 +211,10 @@ export default {
         alert('Please ensure you fill work items');
       }
       this.calInvoiceTotal();
-      const dataBase = db.collection('invoices').doc();
+      const dataBase = db.collections().doc();
 
       await dataBase.update({
-        invoiceId: uuidv4(),
+        invoiceId: uuidv4(6),
         billerStreetAddress: this.billerStreetAddress,
         billerCity: this.billerCity,
         billerZipCode: this.billerZipCode,
