@@ -5,8 +5,8 @@
     ref="invoiceWrap"
     class="invoice-wrap flex flex-column"
   >
-    <form>
-  <AnimationPageVue/>
+    <form @submit.prevent="submitForm" class="invoice-content">
+      <AnimationPageVue v-show="loading" />
       <h1 style="margin-bottom: 40px" v-if="!editInvoice">New Invoice</h1>
       <h1 v-else>Edit Invoice</h1>
 
@@ -15,7 +15,12 @@
         <h4>Bill From</h4>
         <div class="input flex flex-column">
           <label for="billerStreetAddress">Street Address</label>
-          <input required type="text" id="billerStreetAddress" v-model="billerStreetAddress" />
+          <input
+            required
+            type="text"
+            id="billerStreetAddress"
+            v-model="billerStreetAddress"
+          />
         </div>
         <div class="location-details flex">
           <div class="input flex flex-column">
@@ -45,7 +50,12 @@
         </div>
         <div class="input flex flex-column">
           <label for="clientStreetAddress">Street Address</label>
-          <input required type="text" id="clientStreetAddress" v-model="clientStreetAddress" />
+          <input
+            required
+            type="text"
+            id="clientStreetAddress"
+            v-model="clientStreetAddress"
+          />
         </div>
         <div class="location-details flex">
           <div class="input flex flex-column">
@@ -70,7 +80,7 @@
             <label for="invoiceDate">Invoice Date</label>
             <input disabled type="text" id="invoiceDate" v-model="invoiceDate" />
           </div>
-          <div class="input flex flex-column" style="margin-left: 20px;">
+          <div class="input flex flex-column" style="margin-left: 20px">
             <label for="paymentDueDate">Payment Due</label>
             <input disabled type="text" id="paymentDueDate" v-model="paymentDueDate" />
           </div>
@@ -84,7 +94,12 @@
         </div>
         <div class="input flex flex-column">
           <label for="productDescription">Product Description</label>
-          <input required type="text" id="productDescription" v-model="productDescription" />
+          <input
+            required
+            type="text"
+            id="productDescription"
+            v-model="productDescription"
+          />
         </div>
 
         <div class="work-items">
@@ -92,18 +107,34 @@
           <table class="item-lists">
             <tr class="table-heading flex">
               <th class="item-name">Item Name</th>
-              <th class="qty" style="margin-left: 160px " >Qty</th>
+              <th class="qty" style="margin-left: 160px">Qty</th>
               <th class="price" style="margin-left: 80px">Price</th>
               <th class="total" style="margin-left: 170px">Total</th>
             </tr>
-            <tr class="table-items flex" style="margin-bottom: 10px;" v-for="(item, index) in invoiceItemList" :key="index">
+            <tr
+              class="table-items flex"
+              style="margin-bottom: 10px"
+              v-for="(item, index) in invoiceItemList"
+              :key="index"
+            >
               <td class="item-name">
                 <label></label> <input type="text" v-model="item.itemName" />
               </td>
-              <td class="qty" style="margin-left: 9px;"><label></label> <input type="text" v-model="item.qty" /></td>
-              <td class="price" style="margin-left: 10px;"><label></label> <input type="text" v-model="item.price" /></td>
-              <td style="margin-left: 15px;" class="total flex" >${{ (item.total = item.qty * item.price) }}</td>
-              <img style="margin-left: 15px; width: 20px; height:20px; cursor:pointer" @click="deleteInvoiceItem(item.id)" :src="pic" alt="" />
+              <td class="qty" style="margin-left: 9px">
+                <label></label> <input type="text" v-model="item.qty" />
+              </td>
+              <td class="price" style="margin-left: 10px">
+                <label></label> <input type="text" v-model="item.price" />
+              </td>
+              <td style="margin-left: 15px" class="total flex">
+                ${{ (item.total = item.qty * item.price) }}
+              </td>
+              <img
+                style="margin-left: 15px; width: 20px; height: 20px; cursor: pointer"
+                @click="deleteInvoiceItem(item.id)"
+                :src="pic"
+                alt=""
+              />
             </tr>
           </table>
           <div @click="addNewInvoiceItem" class="flex button">
@@ -118,10 +149,20 @@
           <button type="button" @click="closeInvoice" class="red">Cancel</button>
         </div>
         <div class="right flex">
-          <button v-if="!editInvoice" type="submit" @click="saveDraft" class="dark-purple">
+          <button
+            v-if="!editInvoice"
+            type="submit"
+            @click="saveDraft"
+            class="dark-purple"
+          >
             Save Draft
           </button>
-          <button v-if="!editInvoice" type="submit" @click="publishInvoice" class="purple">
+          <button
+            v-if="!editInvoice"
+            type="submit"
+            @click="publishInvoice"
+            class="purple"
+          >
             Create Invoice
           </button>
           <button v-if="editInvoice" type="sumbit" class="purple">Update Invoice</button>
@@ -131,10 +172,12 @@
   </div>
 </template>
 <script>
-// eslint-disable-next-line no-unused-vars
 import image from '@/assets/icon-delete.svg';
 import Image from '@/assets/icon-plus.svg';
 import { v4 as uuidv4 } from 'uuid';
+// import { mapMutations } from 'vuex';
+import { collection, addDoc } from 'firebase/firestore';
+import { mapMutations } from 'vuex';
 import db from '../Firebase/firebaseInit';
 import AnimationPageVue from './AnimationPage.vue';
 
@@ -150,7 +193,7 @@ export default {
       Pic: Image,
       dateOptions: { year: 'numeric', month: 'short', day: 'numeric' },
       docId: null,
-      loading: null,
+      loading: false,
       billerStreetAddress: null,
       billerCity: null,
       billerZipCode: null,
@@ -176,11 +219,24 @@ export default {
   created() {
     // how to get invoice current date
     this.invoiceDateUnix = Date.now();
-    this.invoiceDate = new Date(this.invoiceDateUnix).toLocaleDateString('en-us', this.dateOptions);
+    this.invoiceDate = new Date(this.invoiceDateUnix).toLocaleDateString(
+      'en-us',
+      this.dateOptions,
+    );
   },
   methods: {
+    ...mapMutations(['TOGGLE_INVOICE', 'TOGGLE_MODAL']),
     closeInvoice() {
       return this.$store.commit('TOGGLE_INVOICE');
+    },
+    toggleModal() {
+      return this.$store.commit('TOGGLE_MODAL');
+    },
+
+    checkClick(e) {
+      if (e.target === this.$refs.invoiceWrap) {
+        this.toggleModal();
+      }
     },
     addNewInvoiceItem() {
       this.invoiceItemList.push({
@@ -202,19 +258,21 @@ export default {
     },
     calInvoiceTotal() {
       this.invoiceTotal = 0;
-      this.invoiceItemList.forEach(((item) => {
+      this.invoiceItemList.forEach((item) => {
         this.invoiceTotal += item.total;
-      }));
+      });
     },
     async uploadInvoice() {
       if (this.invoiceItemList.length <= 0) {
+        // eslint-disable-next-line no-alert
         alert('Please ensure you fill work items');
       }
-      this.calInvoiceTotal();
-      const dataBase = db.collections().doc();
+      this.loading = true;
 
-      await dataBase.update({
-        invoiceId: uuidv4(6),
+      this.calInvoiceTotal();
+
+      await addDoc(collection(db, 'invoices'), {
+        invoiceId: uuidv4(),
         billerStreetAddress: this.billerStreetAddress,
         billerCity: this.billerCity,
         billerZipCode: this.billerZipCode,
@@ -235,8 +293,8 @@ export default {
         invoiceDraft: this.invoiceDraft,
         invoiceItemList: this.invoiceItemList,
         invoiceTotal: this.invoiceTotal,
-
       });
+      this.loading = false;
 
       this.TOGGLE_INVOICE();
     },
@@ -248,12 +306,18 @@ export default {
     invoModal() {
       return this.$store.state.invoiceModal;
     },
+    modaPg() {
+      return this.$store.state.modalActive;
+    },
   },
   watch: {
     paymentTerms() {
       const futureDate = new Date();
       this.paymentDueDateUnix = futureDate.setDate(futureDate.getDate());
-      this.paymentDueDate = new Date(this.paymentDueDateUnix).toLocaleDateString('en-us', this.dateOptions);
+      this.paymentDueDate = new Date(this.paymentDueDateUnix).toLocaleDateString(
+        'en-us',
+        this.dateOptions,
+      );
     },
   },
   mounted() {},
@@ -306,7 +370,7 @@ export default {
     position: relative;
     padding: 56px;
     max-width: 700px;
-    width: 100%;
+    width: 140%;
     background-color: #141625;
     color: #fff;
     box-shadow: 10px 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
