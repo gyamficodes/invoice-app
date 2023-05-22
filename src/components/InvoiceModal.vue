@@ -175,9 +175,8 @@
 import image from '@/assets/icon-delete.svg';
 import Image from '@/assets/icon-plus.svg';
 import { v4 as uuidv4 } from 'uuid';
-// import { mapMutations } from 'vuex';
 import { collection, addDoc } from 'firebase/firestore';
-import { mapMutations } from 'vuex';
+import { mapMutations, mapState } from 'vuex';
 import db from '../Firebase/firebaseInit';
 import AnimationPageVue from './AnimationPage.vue';
 
@@ -225,19 +224,17 @@ export default {
     );
   },
   methods: {
-    ...mapMutations(['TOGGLE_INVOICE', 'TOGGLE_MODAL']),
-    closeInvoice() {
-      return this.$store.commit('TOGGLE_INVOICE');
-    },
-    toggleModal() {
-      return this.$store.commit('TOGGLE_MODAL');
-    },
+    ...mapMutations(['TOGGLE_INVOICE', 'TOGGLE_MODAL', 'TOGGLE_MODAL']),
 
     checkClick(e) {
       if (e.target === this.$refs.invoiceWrap) {
-        this.toggleModal();
+        this.TOGGLE_MODAL();
       }
     },
+    closeInvoice() {
+      return this.$store.commit('TOGGLE_INVOICE');
+    },
+
     addNewInvoiceItem() {
       this.invoiceItemList.push({
         id: uuidv4(),
@@ -303,12 +300,14 @@ export default {
     },
   },
   computed: {
+    // eslint-disable-next-line no-undef
+    ...mapState(['modalActive']),
     invoModal() {
       return this.$store.state.invoiceModal;
     },
-    modaPg() {
-      return this.$store.state.modalActive;
-    },
+    // modaPg() {
+    //   return this.$store.state.modalActive;
+    // },
   },
   watch: {
     paymentTerms() {

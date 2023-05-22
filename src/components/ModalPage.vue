@@ -1,5 +1,5 @@
 <template>
-   <div class="modal flex">
+  <div class="modal flex">
     <div class="modal-content">
       <p>Are you sure you want to exit? Your changes will not be saved?</p>
       <div class="actions flex">
@@ -11,10 +11,22 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
+
 export default {
   name: 'ModalPage',
   data() {
     return {};
+  },
+  methods: {
+    ...mapMutations(['TOGGLE_MODAL', 'TOGGLE_INVOICE']),
+    closeModal() {
+      this.TOGGLE_MODAL();
+    },
+    closeInvoice() {
+      this.TOGGLE_MODAL();
+      this.TOGGLE_MODAL();
+    },
   },
   computed: {},
   watch: {},
@@ -51,5 +63,4 @@ export default {
     }
   }
 }
-
 </style>

@@ -1,18 +1,18 @@
 <template>
   <div>
-    <div v-if="!mobile " class="app flex flex-column">
+    <div v-if="!mobile" class="app flex flex-column">
       <NavigationPage />
       <div class="app-content flex flex-column">
-      <!-- <ModalPage v-show="modaPg" /> -->
-      <Transition name="invoice">
-        <InvoiceModal v-if="invoiceModal"/>
-      </Transition>
+        <ModalPage v-if="modalActive" />
+        <Transition name="invoice">
+          <InvoiceModal v-if="invoiceModal" />
+        </Transition>
         <router-view />
       </div>
     </div>
     <div v-else class="mobile-message flex flex-column">
-    <h2>Sorry, this app is not supported on mobile devices</h2>
-    <p> To use this app, please use computer or tablet</p>
+      <h2>Sorry, this app is not supported on mobile devices</h2>
+      <p>To use this app, please use computer or tablet</p>
     </div>
   </div>
 
@@ -22,16 +22,16 @@
   </nav>
 </template>
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapMutations } from 'vuex';
 import NavigationPage from './components/NavigationPage.vue';
 import InvoiceModal from './components/InvoiceModal.vue';
-// import ModalPage from './components/ModalPage.vue';
+import ModalPage from './components/ModalPage.vue';
 
 export default {
   components: {
     NavigationPage,
     InvoiceModal,
-    // ModalPage,
+    ModalPage,
   },
   data() {
     return {
@@ -39,10 +39,12 @@ export default {
     };
   },
   created() {
+    this.GET_INVOICES();
     this.checkScreen();
     window.addEventListener('resize', this.checkScreen);
   },
   methods: {
+    ...mapMutations(['GET_INVOICES']),
     checkScreen() {
       const windowWidth = window.innerWidth;
       if (windowWidth <= 750) {
@@ -56,11 +58,9 @@ export default {
     modaPg() {
       return this.$store.state.modalActive;
     },
-
   },
   watch: {},
   mounted() {},
-
 };
 </script>
 
